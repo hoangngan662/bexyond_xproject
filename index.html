@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BE[X]YOND — Beyond with Cường Bạch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Beautique Display';
+    src: url('assets/BeautiqueDisplay-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Beautique Display Condensed';
+    src: url('assets/BeautiqueDisplayCondensed-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root {
+    --bg: #050505;
+    --bg-soft: #0a0608;
+    --text: #f5f3f0;
+    --text-dim: rgba(245, 243, 240, 0.55);
+    --text-faint: rgba(245, 243, 240, 0.3);
+    --rose: #ff8a8a;
+    --rose-deep: #ff6c6c;
+    --rose-soft: #ffc6c6;
+    --silver: #d9d6d2;
+    --line: rgba(245, 243, 240, 0.08);
+    --display: 'Cinzel', serif;
+    --serif: 'Cormorant Garamond', serif;
+    --sans: 'Inter', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* === Grain overlay === */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+
+  /* === Nav === */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(20px);
+    background: linear-gradient(to bottom, rgba(5,5,5,0.85), transparent);
+    transition: all .4s ease;
+  }
+  nav .logo {
+    display: inline-flex;
+    align-items: center;
+  }
+  nav .logo-img {
+    display: block;
+    width: 132px;
+    height: auto;
+  }
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 36px;
+  }
+  nav a {
+    color: #ffe5e5;
+    background: linear-gradient(180deg, #fff 0%, #ffe4e4 42%, #ffabab 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 18px rgba(255, 150, 150, 0.28);
+    text-decoration: none;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    transition: color .3s ease;
+    position: relative;
+  }
+  nav a:hover { color: var(--text); }
+  nav a:hover::after {
+    content: '';
+    position: absolute;
+    bottom: -6px; left: 0; right: 0;
+    height: 1px;
+    background: var(--rose);
+  }
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    nav ul { display: none; }
+  }
+
+  /* === HERO === */
+  .hero {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0 24px;
+  }
+
+  /* Layered light burst */
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .hero-bg::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1200px; height: 1200px;
+    background: radial-gradient(circle, rgba(255,108,108,0.25) 0%, rgba(255,108,108,0.08) 30%, transparent 60%);
+    filter: blur(40px);
+    animation: pulse 6s ease-in-out infinite;
+  }
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 50%);
+    filter: blur(60px);
+    animation: pulse 4s ease-in-out infinite alternate;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+  }
+
+  /* Particles */
+  .particles {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #fff, 0 0 12px rgba(255,200,200,0.6);
+    animation: float linear infinite;
+    opacity: 0;
+  }
+  @keyframes float {
+    0% { transform: translateY(0) scale(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+  }
+
+  /* Light rays */
+  .rays {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px; height: 800px;
+    z-index: 1;
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  .ray {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 2px;
+    height: 400px;
+    background: linear-gradient(to top, transparent, rgba(255,200,200,0.8), rgba(255,255,255,0.9), transparent);
+    transform-origin: top center;
+    filter: blur(1px);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    animation: heroEnter 2s ease-out;
+  }
+  @keyframes heroEnter {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-tag {
+    font-family: 'Beautique Display Condensed', var(--serif);
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #ffe5e5;
+    background: linear-gradient(180deg, #fff 0%, #ffe4e4 42%, #ffabab 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 18px rgba(255, 150, 150, 0.28);
+    margin-bottom: 28px;
+  }
+  .hero-tag::before, .hero-tag::after {
+    content: '—';
+    margin: 0 16px;
+    color: #ff9d9d;
+    -webkit-text-fill-color: #ff9d9d;
+    text-shadow: 0 0 12px rgba(255, 130, 130, 0.35);
+  }
+
+  .hero-title-image {
+    display: block;
+    width: min(82vw, 820px);
+    height: auto;
+    margin: 0 auto 48px;
+    filter: drop-shadow(0 0 60px rgba(255,180,180,0.4));
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 14px 32px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.02);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all .4s ease;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,108,108,0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform .6s ease;
+  }
+  .btn:hover { border-color: var(--rose); color: var(--rose-soft); }
+  .btn:hover::before { transform: translateX(100%); }
+  .btn.primary { border-color: var(--rose); color: var(--rose-soft); }
+  .btn.primary:hover { background: rgba(255,108,108,0.1); }
+
+  /* Scroll indicator */
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--text-faint);
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+  .scroll-hint::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--rose), transparent);
+    margin: 12px auto 0;
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+  @keyframes scrollLine {
+    0%, 100% { transform: scaleY(1); transform-origin: top; }
+    50% { transform: scaleY(0.3); transform-origin: top; }
+  }
+
+  /* === Section base === */
+  section {
+    padding: 140px 48px;
+    position: relative;
+  }
+  @media (max-width: 768px) {
+    section { padding: 100px 24px; }
+  }
+
+  .section-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 24px;
+    display: inline-block;
+  }
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--rose);
+    vertical-align: middle;
+    margin-right: 16px;
+  }
+  .section-title {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(36px, 5vw, 72px);
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    margin-bottom: 32px;
+    background: linear-gradient(180deg, #fff 0%, #b8b4b0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .section-title em {
+    font-family: var(--serif);
+    font-style: italic;
+    background: linear-gradient(180deg, var(--rose-soft) 0%, var(--rose-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 400;
+  }
+  .section-intro {
+    font-family: var(--serif);
+    font-size: 19px;
+    color: var(--text-dim);
+    max-width: 720px;
+    line-height: 1.7;
+  }
+
+  /* === STORY === */
+  .story {
+    background: linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 50%, var(--bg) 100%);
+    position: relative;
+  }
+  .story-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .story-header {
+    text-align: center;
+    margin-bottom: 100px;
+  }
+
+  .chapters {
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+  }
+  .chapter {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .chapter:nth-child(even) { direction: rtl; }
+  .chapter:nth-child(even) > * { direction: ltr; }
+  @media (max-width: 900px) {
+    .chapter { grid-template-columns: 1fr; gap: 32px; direction: ltr; }
+  }
+  .chapter-visual {
+    aspect-ratio: 1;
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    background: radial-gradient(circle at center, rgba(20,8,12,1) 0%, rgba(5,5,5,1) 70%);
+    border: 1px solid var(--line);
+  }
+  .chapter-num {
+    position: absolute;
+    top: 24px; left: 24px;
+    font-family: var(--display);
+    font-size: 14px;
+    letter-spacing: 0.3em;
+    color: var(--text-faint);
+    z-index: 2;
+  }
+
+  /* Light visuals per chapter */
+  .light-single, .light-grow, .light-converge, .light-butterfly, .light-seven {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .light-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow:
+      0 0 20px rgba(255,255,255,0.9),
+      0 0 60px rgba(255,180,180,0.6),
+      0 0 120px rgba(255,108,108,0.3);
+    animation: breathe 3s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.3); opacity: 1; }
+  }
+  .light-grow .light-dot { width: 30px; height: 30px; box-shadow: 0 0 40px rgba(255,255,255,0.9), 0 0 100px rgba(255,180,180,0.7), 0 0 200px rgba(255,108,108,0.4); }
+  .light-grow::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at center, rgba(255,180,180,0.2) 0%, transparent 40%);
+  }
+  .light-converge::before, .light-converge::after {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    width: 200px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--rose), transparent);
+    transform-origin: center;
+  }
+  .light-converge::before { transform: translate(-50%, -50%) rotate(20deg); }
+  .light-converge::after { transform: translate(-50%, -50%) rotate(-20deg); }
+  .light-converge .light-dot {
+    width: 50px; height: 50px;
+    background: radial-gradient(circle, #fff 0%, var(--rose-soft) 70%, transparent 100%);
+    box-shadow: 0 0 80px rgba(255,180,180,0.8), 0 0 150px rgba(255,108,108,0.5);
+  }
+
+  .butterfly-svg {
+    width: 60%;
+    filter: drop-shadow(0 0 30px rgba(255,108,108,0.5)) drop-shadow(0 0 60px rgba(255,180,180,0.3));
+    animation: flutter 4s ease-in-out infinite;
+  }
+  @keyframes flutter {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-10px) scale(1.03); }
+  }
+
+  .seven-wings {
+    position: relative;
+    width: 70%;
+    aspect-ratio: 1;
+  }
+  .seven-wings .wing {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 4px; height: 45%;
+    background: linear-gradient(to top, transparent, var(--rose-soft), #fff, transparent);
+    transform-origin: bottom center;
+    filter: blur(0.5px);
+    box-shadow: 0 0 20px rgba(255,180,180,0.6);
+  }
+  .seven-wings .core {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, var(--rose-soft) 50%, transparent 100%);
+    box-shadow: 0 0 40px rgba(255,255,255,0.8), 0 0 80px rgba(255,108,108,0.5);
+  }
+
+  .chapter-text {
+    padding: 20px 0;
+  }
+  .chapter-tag {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 16px;
+  }
+  .chapter-title {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: clamp(28px, 3.5vw, 44px);
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+  .chapter-title em {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--rose);
+    font-weight: 400;
+  }
+  .chapter-desc {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+
+  /* === TIMELINE === */
+  .timeline-section {
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .timeline-container {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .timeline-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+  .timeline-track {
+    position: relative;
+    padding: 60px 0;
+  }
+  .timeline-track::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255,180,180,0.4) 10%,
+      var(--rose) 50%,
+      rgba(255,180,180,0.4) 90%,
+      transparent 100%);
+    box-shadow: 0 0 20px rgba(255,108,108,0.3);
+  }
+  .timeline-items {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+  }
+  .timeline-item {
+    flex: 1;
+    text-align: center;
+    position: relative;
+  }
+  .timeline-item:nth-child(odd) .timeline-content { transform: translateY(-130px); }
+  .timeline-item:nth-child(even) .timeline-content { transform: translateY(60px); }
+  .timeline-dot {
+    width: 16px; height: 16px;
+    background: var(--bg);
+    border: 2px solid var(--rose);
+    border-radius: 50%;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 0 20px rgba(255,108,108,0.6);
+  }
+  .timeline-dot.big {
+    width: 24px; height: 24px;
+    background: radial-gradient(circle, #fff 0%, var(--rose) 60%, transparent 100%);
+    border-color: #fff;
+    box-shadow: 0 0 30px #fff, 0 0 60px var(--rose);
+  }
+  .timeline-content {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+  }
+  .timeline-date {
+    font-family: var(--display);
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    color: var(--rose);
+    margin-bottom: 6px;
+  }
+  .timeline-label {
+    font-family: var(--serif);
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.3;
+    font-style: italic;
+  }
+  .timeline-phase-tag {
+    position: absolute;
+    top: -40px;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  @media (max-width: 900px) {
+    .timeline-track { padding: 20px 0; }
+    .timeline-track::before {
+      top: 0; bottom: 0; left: 20px; right: auto;
+      width: 1px; height: auto;
+      background: linear-gradient(180deg, transparent, var(--rose) 20%, var(--rose) 80%, transparent);
+    }
+    .timeline-items { flex-direction: column; gap: 48px; align-items: flex-start; padding-left: 0; }
+    .timeline-item { text-align: left; padding-left: 60px; width: 100%; }
+    .timeline-item:nth-child(odd) .timeline-content,
+    .timeline-item:nth-child(even) .timeline-content { transform: none; }
+    .timeline-content { position: relative; left: 0; transform: none; width: auto; }
+    .timeline-dot { position: absolute; left: 13px; top: 4px; margin: 0; }
+  }
+
+  /* === 30 DAYS === */
+  .days-section {
+    background: linear-gradient(180deg, var(--bg) 0%, #0a0608 50%, var(--bg) 100%);
+  }
+  .days-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 12px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  @media (max-width: 768px) {
+    .days-grid { grid-template-columns: repeat(6, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .days-grid { grid-template-columns: repeat(5, 1fr); }
+  }
+  .day-cell {
+    aspect-ratio: 1;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all .4s ease;
+    overflow: hidden;
+    background: rgba(255,255,255,0.01);
+  }
+  .day-cell::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,180,180,0.6) 0%, transparent 70%);
+    transition: all .6s ease;
+  }
+  /* Light grows from D-29 to D-Day */
+  .day-cell .num {
+    font-family: var(--display);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    position: relative;
+    z-index: 2;
+    transition: color .3s ease;
+  }
+  .day-cell .dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: #fff;
+    margin-top: 6px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 0 4px rgba(255,255,255,0.6);
+  }
+  .day-cell:hover {
+    border-color: var(--rose);
+    transform: scale(1.05);
+  }
+  .day-cell:hover .num { color: var(--text); }
+  .day-cell:hover::before { width: 80%; height: 80%; }
+  .day-cell.dday {
+    border-color: var(--rose);
+    background: radial-gradient(circle at center, rgba(255,108,108,0.2) 0%, transparent 70%);
+  }
+  .day-cell.dday::before { width: 100%; height: 100%; opacity: 0.8; }
+  .day-cell.dday .num { color: var(--rose-soft); font-weight: 600; }
+  .day-cell.dday .dot { background: var(--rose); box-shadow: 0 0 12px var(--rose); }
+
+  .days-legend {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 60px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .legend-swatch {
+    width: 12px; height: 12px;
+    border-radius: 2px;
+  }
+
+  /* === PROJECTS === */
+  .projects-section {
+    background: var(--bg);
+  }
+  .projects-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .project-card {
+    display: block;
+    border: 1px solid var(--line);
+    padding: 32px 28px;
+    background: rgba(255,255,255,0.015);
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: all .5s ease;
+    cursor: pointer;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--rose) 0%, transparent 100%);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .5s ease;
+  }
+  .project-card:hover {
+    border-color: rgba(255,108,108,0.3);
+    background: rgba(255,108,108,0.03);
+    transform: translateY(-4px);
+  }
+  .project-card:hover::before { transform: scaleX(1); }
+  .project-icon {
+    width: 40px; height: 40px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--rose);
+  }
+  .project-icon svg { width: 18px; height: 18px; }
+  .project-type {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 12px;
+  }
+  .project-title {
+    font-family: var(--display);
+    font-size: 20px;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .project-by {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--text-faint);
+    margin-bottom: 20px;
+  }
+  .project-desc {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+  .project-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .project-status {
+    color: var(--rose);
+  }
+
+  /* === CONSTELLATION / BỨC TRANH TỔNG === */
+  .constellation-section {
+    background: linear-gradient(180deg, var(--bg) 0%, #08050a 50%, var(--bg) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .constellation-header {
+    text-align: center;
+    margin-bottom: 60px;
+    position: relative;
+    z-index: 2;
+  }
+  .constellation-canvas {
+    position: relative;
+    width: 100%;
+    max-width: 1100px;
+    aspect-ratio: 16/10;
+    margin: 0 auto;
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(255,108,108,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, rgba(255,180,180,0.06) 0%, transparent 50%),
+      #050306;
+    overflow: hidden;
+  }
+  /* Background stars */
+  .bg-star {
+    position: absolute;
+    width: 1px; height: 1px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 2px #fff;
+    opacity: 0.4;
+    animation: twinkle 4s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.8; }
+  }
+  /* Project stars */
+  .star {
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all .4s ease;
+    z-index: 3;
+  }
+  .star::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    background: radial-gradient(circle, rgba(255,180,180,0.6) 0%, transparent 70%);
+    border-radius: 50%;
+    transition: all .4s ease;
+  }
+  .star .core {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, var(--rose-soft) 60%, var(--rose) 100%);
+    box-shadow: 0 0 12px rgba(255,200,200,0.8), 0 0 24px rgba(255,108,108,0.5);
+    animation: starPulse 3s ease-in-out infinite;
+  }
+  @keyframes starPulse {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.15); }
+  }
+  .star:hover { transform: scale(1.5); z-index: 10; }
+  .star:hover::before { inset: -12px; background: radial-gradient(circle, rgba(255,180,180,0.9) 0%, transparent 70%); }
+  .star:hover .label { opacity: 1; transform: translate(-50%, 16px); }
+  .star .label {
+    position: absolute;
+    top: 100%; left: 50%;
+    transform: translate(-50%, 8px);
+    background: rgba(5,5,5,0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--line);
+    padding: 8px 12px;
+    white-space: nowrap;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rose-soft);
+    opacity: 0;
+    pointer-events: none;
+    transition: all .3s ease;
+  }
+  /* Connecting constellation lines drawn via SVG */
+  .const-lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .const-lines line {
+    stroke: rgba(255,180,180,0.25);
+    stroke-width: 0.5;
+    stroke-dasharray: 2 3;
+  }
+  .const-butterfly {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 30px rgba(255,108,108,0.5));
+    animation: flutter 5s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  /* Stats summary */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    max-width: 1100px;
+    margin: 80px auto 0;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  @media (max-width: 768px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+  .stat {
+    background: var(--bg);
+    padding: 36px 24px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: var(--display);
+    font-size: 42px;
+    letter-spacing: 0.02em;
+    background: linear-gradient(180deg, #fff 0%, var(--rose) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  /* === RECAP / WRAP === */
+  .wrap-section {
+    padding: 160px 48px;
+    text-align: center;
+    background:
+      radial-gradient(ellipse at center, rgba(255,108,108,0.06) 0%, transparent 50%),
+      var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+  .wrap-section::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 800px; height: 800px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(255,180,180,0.15) 0%, transparent 60%);
+    filter: blur(60px);
+    animation: pulse 8s ease-in-out infinite;
+  }
+  .wrap-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .wrap-quote {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(24px, 3.5vw, 40px);
+    line-height: 1.5;
+    color: var(--silver);
+    margin-bottom: 48px;
+    letter-spacing: 0.01em;
+  }
+  .wrap-quote em {
+    color: var(--rose);
+    font-weight: 500;
+  }
+  .wrap-sig {
+    font-family: var(--display);
+    font-size: 11px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  /* === FOOTER === */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 60px 48px 40px;
+    background: var(--bg);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--line);
+  }
+  @media (max-width: 768px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  }
+  .footer-brand .logo {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .footer-brand .logo-img {
+    display: block;
+    width: 156px;
+    height: auto;
+  }
+  .footer-brand p {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--text-dim);
+    max-width: 360px;
+    line-height: 1.7;
+  }
+  footer h4 {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  footer ul { list-style: none; }
+  footer ul li { margin-bottom: 10px; }
+  footer ul a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-family: var(--serif);
+    font-size: 15px;
+    transition: color .3s ease;
+  }
+  footer ul a:hover { color: var(--rose); }
+  .footer-bottom {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .hashtags { color: var(--rose-soft); }
+
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav>
+  <div class="logo"><img class="logo-img" src="assets/bexyond.png" alt="BE[X]YOND" /></div>
+  <ul>
+    <li><a href="#story">The Story</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="#days">30 Days</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#constellation">The Sky</a></li>
+  </ul>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="hero-bg"></div>
+  <div class="particles" id="particles"></div>
+  <div class="rays" id="rays"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">Cường Bạch · 26th Birthday Campaign · 2026</div>
+    <img class="hero-title-image" src="assets/TITLE.png" alt="BE[X]YOND - Beyond with Cường Bạch" />
+    <div class="hero-cta">
+      <a href="#story" class="btn primary">Bắt đầu hành trình</a>
+      <a href="#projects" class="btn">Khám phá Projects</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">Scroll</div>
+</header>
+
+<!-- ============ STORY ============ -->
+<section class="story" id="story">
+  <div class="story-container">
+    <div class="story-header reveal">
+      <div class="section-label">The Storyline</div>
+      <h2 class="section-title">Từ một ánh sáng — <em>đến cả một bầu trời</em></h2>
+      <p class="section-intro">Năm chương của BE[X]YOND kể về hành trình của một đốm sáng nhỏ – được tìm thấy, được nuôi dưỡng, rồi hoá thành cánh bướm bay về phía chùm sáng bảy cánh.</p>
+    </div>
+
+    <div class="chapters">
+      <!-- Chapter 01 -->
+      <div class="chapter reveal">
+        <div class="chapter-visual">
+          <div class="chapter-num">CHAPTER 01</div>
+          <div class="light-single"><div class="light-dot"></div></div>
+        </div>
+        <div class="chapter-text">
+          <div class="chapter-tag">Phase 01 · The First Light</div>
+          <h3 class="chapter-title">Một đốm sáng <em>đơn độc</em></h3>
+          <p class="chapter-desc">Mọi thứ khởi nguồn từ một đốm sáng nhỏ bé, đơn độc giữa khoảng không tối đen — mong manh, nhưng chưa từng vụt tắt. Đó là ánh sáng của Cường trong những ngày đầu được nhìn thấy, được lựa chọn ở lại và dần được yêu thương.</p>
+        </div>
+      </div>
+
+      <!-- Chapter 02 -->
+      <div class="chapter reveal">
+        <div class="chapter-visual">
+          <div class="chapter-num">CHAPTER 02</div>
+          <div class="light-grow"><div class="light-dot"></div></div>
+        </div>
+        <div class="chapter-text">
+          <div class="chapter-tag">Phase 02 · Growth</div>
+          <h3 class="chapter-title">Ánh sáng <em>lớn dần</em></h3>
+          <p class="chapter-desc">Qua từng project, từng lời nhắn, từng ánh đèn fan bật lên — đốm sáng ấy không còn cô độc. Nó bắt đầu lớn lên, mạnh hơn, sống động hơn — như cách tình cảm của fandom ngày càng đậm sâu.</p>
+        </div>
+      </div>
+
+      <!-- Chapter 03 -->
+      <div class="chapter reveal">
+        <div class="chapter-visual">
+          <div class="chapter-num">CHAPTER 03</div>
+          <div class="light-converge"><div class="light-dot"></div></div>
+        </div>
+        <div class="chapter-text">
+          <div class="chapter-tag">Phase 03 · Convergence</div>
+          <h3 class="chapter-title">Các tia sáng <em>hội tụ</em></h3>
+          <p class="chapter-desc">Những tia sáng riêng lẻ bắt đầu chạm vào nhau, tạo thành một nhánh sáng trong chùm ánh sáng lớn hơn — như cách fandom nâng đỡ hành trình trưởng thành của Cường, để không một ai phải tỏa sáng một mình.</p>
+        </div>
+      </div>
+
+      <!-- Chapter 04 -->
+      <div class="chapter reveal">
+        <div class="chapter-visual">
+          <div class="chapter-num">CHAPTER 04</div>
+          <div class="light-butterfly">
+            <svg class="butterfly-svg" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="wingGrad" cx="50%" cy="50%">
+                  <stop offset="0%" stop-color="#fff" stop-opacity="0.9"/>
+                  <stop offset="50%" stop-color="#ffc6c6" stop-opacity="0.7"/>
+                  <stop offset="100%" stop-color="#ff6c6c" stop-opacity="0.3"/>
+                </radialGradient>
+              </defs>
+              <!-- Left wing top -->
+              <path d="M100,80 Q40,20 20,60 Q10,90 50,90 Q80,90 100,80" fill="url(#wingGrad)" opacity="0.85"/>
+              <!-- Left wing bottom -->
+              <path d="M100,80 Q60,120 40,140 Q70,150 90,120 Q100,100 100,80" fill="url(#wingGrad)" opacity="0.75"/>
+              <!-- Right wing top -->
+              <path d="M100,80 Q160,20 180,60 Q190,90 150,90 Q120,90 100,80" fill="url(#wingGrad)" opacity="0.85"/>
+              <!-- Right wing bottom -->
+              <path d="M100,80 Q140,120 160,140 Q130,150 110,120 Q100,100 100,80" fill="url(#wingGrad)" opacity="0.75"/>
+              <!-- Body -->
+              <ellipse cx="100" cy="85" rx="3" ry="30" fill="#fff" opacity="0.9"/>
+              <!-- Antennae -->
+              <path d="M98,55 Q92,40 88,30" stroke="#ffc6c6" stroke-width="1" fill="none"/>
+              <path d="M102,55 Q108,40 112,30" stroke="#ffc6c6" stroke-width="1" fill="none"/>
+            </svg>
+          </div>
+        </div>
+        <div class="chapter-text">
+          <div class="chapter-tag">Phase 04 · Transformation</div>
+          <h3 class="chapter-title">Lõi sáng <em>hoá bướm</em></h3>
+          <p class="chapter-desc">Khi hành trình bước vào giai đoạn rực rỡ nhất, ánh sáng chuyển hoá. Từ lõi sáng trắng pha sắc đỏ, một cánh bướm được hình thành — biểu tượng của sự trưởng thành, tái sinh và toả sáng sau hành trình dài được nuôi dưỡng bằng yêu thương.</p>
+        </div>
+      </div>
+
+      <!-- Chapter 05 -->
+      <div class="chapter reveal">
+        <div class="chapter-visual">
+          <div class="chapter-num">CHAPTER 05</div>
+          <div class="light-seven">
+            <div class="seven-wings" id="sevenWings">
+              <div class="core"></div>
+            </div>
+          </div>
+        </div>
+        <div class="chapter-text">
+          <div class="chapter-tag">Phase 05 · Beyond</div>
+          <h3 class="chapter-title">Bay về phía <em>chùm sáng bảy cánh</em></h3>
+          <p class="chapter-desc">Phase sinh nhật khép lại. Con bướm rời khỏi vùng sáng riêng, bay về phía chùm ánh sáng gồm 7 cánh đang rực cháy phía trước — biểu tượng cho UPRIZE và 7 thành viên cùng đồng hành. Từ một ánh sáng đơn độc, đến khi trở thành một phần của bầu trời lớn hơn.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TIMELINE ============ -->
+<section class="timeline-section" id="timeline">
+  <div class="timeline-container">
+    <div class="timeline-header reveal">
+      <div class="section-label">The Roadmap</div>
+      <h2 class="section-title">Hai phase, <em>một hành trình</em></h2>
+      <p class="section-intro" style="margin: 0 auto;">Phase 1 đếm ngược về sinh nhật 23/06. Phase 2 mở cửa cho debut cùng UPRIZE. Mỗi mốc là một bậc thang ánh sáng.</p>
+    </div>
+
+    <div class="timeline-track reveal">
+      <div class="timeline-items">
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <div class="timeline-phase-tag">Phase 1</div>
+            <div class="timeline-date">16.05</div>
+            <div class="timeline-label">Air campaign</div>
+          </div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <div class="timeline-date">21.05</div>
+            <div class="timeline-label">Công bố fandom</div>
+          </div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <div class="timeline-date">23.05</div>
+            <div class="timeline-label">Album & hình ảnh</div>
+          </div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <div class="timeline-date">23.06</div>
+            <div class="timeline-label">Sinh nhật Cường Bạch</div>
+          </div>
+          <div class="timeline-dot big"></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <div class="timeline-phase-tag">Phase 2</div>
+            <div class="timeline-date">25.06</div>
+            <div class="timeline-label">Debut Day</div>
+          </div>
+          <div class="timeline-dot big"></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <div class="timeline-date">16.07</div>
+            <div class="timeline-label">MV Debut</div>
+          </div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <div class="timeline-date">17.07</div>
+            <div class="timeline-label">Fan Meeting</div>
+          </div>
+          <div class="timeline-dot"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 30 DAYS ============ -->
+<section class="days-section" id="days">
+  <div class="days-header reveal">
+    <div class="section-label">30 Days Challenge</div>
+    <h2 class="section-title">Ba mươi câu hỏi, <em>một bầu trời ánh sáng</em></h2>
+    <p class="section-intro" style="margin: 0 auto;">Mỗi ngày một tia sáng fan thắp lên. Ba chặng — Đốm sáng đơn độc, Ánh sáng hội tụ, Bướm bay lên — dồn về 23/06.</p>
+  </div>
+
+  <div class="days-grid reveal" id="daysGrid"></div>
+
+  <div class="days-legend reveal">
+    <div class="legend-item"><span class="legend-swatch" style="background: #3d3d6b;"></span> Chặng 1 · Đốm sáng</div>
+    <div class="legend-item"><span class="legend-swatch" style="background: #706fd3;"></span> Chặng 2 · Hội tụ</div>
+    <div class="legend-item"><span class="legend-swatch" style="background: #c44569;"></span> Chặng 3 · Bướm bay</div>
+  </div>
+</section>
+
+<!-- ============ PROJECTS ============ -->
+<section class="projects-section" id="projects">
+  <div class="projects-header reveal">
+    <div class="section-label">The Projects</div>
+    <h2 class="section-title">Mỗi tia sáng — <em>một dự án</em></h2>
+    <p class="section-intro" style="margin: 0 auto;">Toàn bộ project của FC, fansite và fan lẻ đăng ký trong umbrella campaign. Tất cả cùng hướng về một bầu trời chung dành cho Cường.</p>
+  </div>
+
+  <div class="projects-grid reveal" id="projectsGrid"></div>
+</section>
+
+<!-- ============ CONSTELLATION ============ -->
+<section class="constellation-section" id="constellation">
+  <div class="constellation-header reveal">
+    <div class="section-label">The Big Picture</div>
+    <h2 class="section-title">Bầu trời <em>chúng ta đã viết</em></h2>
+    <p class="section-intro" style="margin: 0 auto;">Khi mọi project hội tụ, hình hài cuối cùng là một cánh bướm — ghép từ chính những ngôi sao mà fandom đã thắp lên. Di chuột vào mỗi ngôi sao để xem dự án.</p>
+  </div>
+
+  <div class="constellation-canvas reveal" id="constellationCanvas">
+    <!-- Stars and butterfly will be injected by JS -->
+    <svg class="const-lines" id="constLines" viewBox="0 0 100 62.5" preserveAspectRatio="none"></svg>
+    <svg class="const-butterfly" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="bigWing" cx="50%" cy="50%">
+          <stop offset="0%" stop-color="#fff" stop-opacity="0.7"/>
+          <stop offset="60%" stop-color="#ffc6c6" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#ff6c6c" stop-opacity="0.1"/>
+        </radialGradient>
+      </defs>
+      <path d="M100,80 Q40,20 20,60 Q10,90 50,90 Q80,90 100,80" fill="url(#bigWing)"/>
+      <path d="M100,80 Q60,120 40,140 Q70,150 90,120 Q100,100 100,80" fill="url(#bigWing)"/>
+      <path d="M100,80 Q160,20 180,60 Q190,90 150,90 Q120,90 100,80" fill="url(#bigWing)"/>
+      <path d="M100,80 Q140,120 160,140 Q130,150 110,120 Q100,100 100,80" fill="url(#bigWing)"/>
+      <ellipse cx="100" cy="85" rx="2" ry="28" fill="#fff" opacity="0.6"/>
+    </svg>
+  </div>
+
+  <div class="stats reveal">
+    <div class="stat">
+      <div class="stat-num">42</div>
+      <div class="stat-label">Projects</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">12</div>
+      <div class="stat-label">Quốc gia</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5.2M</div>
+      <div class="stat-label">Impressions</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">48M₫</div>
+      <div class="stat-label">Thiện nguyện</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WRAP / QUOTE ============ -->
+<section class="wrap-section">
+  <div class="wrap-content reveal">
+    <p class="wrap-quote">"Từ một ánh sáng được tìm thấy — <em>đến một ánh sáng có thể tự do bay xa</em>. Và rồi, trở thành một phần của cả bầu trời."</p>
+    <p class="wrap-sig">— Whiterose · BE[X]YOND · 2026 —</p>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo"><img class="logo-img" src="assets/bexyond.png" alt="BE[X]YOND" /></div>
+      <p>Beyond with Cường Bạch — Birthday Project 2026, by Whiterose fandom. A journey of light, growth, and transformation.</p>
+    </div>
+    <div>
+      <h4>The Project</h4>
+      <ul>
+        <li><a href="#story">Storyline</a></li>
+        <li><a href="#timeline">Timeline</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#constellation">The Sky</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Get Involved</h4>
+      <ul>
+        <li><a href="#">Submit Project</a></li>
+        <li><a href="#">30 Days Challenge</a></li>
+        <li><a href="#">Donate</a></li>
+        <li><a href="#">Guideline</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Follow</h4>
+      <ul>
+        <li><a href="#">Twitter / X</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">TikTok</a></li>
+        <li><a href="#">Threads</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 Whiterose Fandom · All rights reserved</div>
+    <div class="hashtags">#BEXYOND_CuongBach · #BeyondWithCuongBach · #CuongBach26</div>
+  </div>
+</footer>
+
+<script>
+  /* ===== Particles ===== */
+  (function(){
+    const container = document.getElementById('particles');
+    const count = 50;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.bottom = (-Math.random() * 30) + '%';
+      p.style.animationDuration = (10 + Math.random() * 15) + 's';
+      p.style.animationDelay = -Math.random() * 20 + 's';
+      p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+      container.appendChild(p);
+    }
+  })();
+
+  /* ===== Hero rays ===== */
+  (function(){
+    const container = document.getElementById('rays');
+    const count = 12;
+    for (let i = 0; i < count; i++) {
+      const r = document.createElement('div');
+      r.className = 'ray';
+      const angle = (360 / count) * i;
+      r.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+      r.style.animationDelay = (i * 0.2) + 's';
+      container.appendChild(r);
+    }
+  })();
+
+  /* ===== Seven wings (UPRIZE) ===== */
+  (function(){
+    const container = document.getElementById('sevenWings');
+    if (!container) return;
+    for (let i = 0; i < 7; i++) {
+      const w = document.createElement('div');
+      w.className = 'wing';
+      const angle = (360 / 7) * i - 90;
+      w.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+      container.appendChild(w);
+    }
+  })();
+
+  /* ===== 30 Days grid ===== */
+  (function(){
+    const grid = document.getElementById('daysGrid');
+    for (let i = 1; i <= 30; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'day-cell';
+      const dayLabel = i === 30 ? 'D-DAY' : `D-${30 - i}`;
+      cell.innerHTML = `<div class="num">${dayLabel}</div><div class="dot"></div>`;
+      if (i === 30) cell.classList.add('dday');
+      // Glow opacity tăng dần
+      const glowOpacity = 0.05 + (i / 30) * 0.4;
+      cell.style.background = `radial-gradient(circle at center, rgba(255,180,180,${glowOpacity}) 0%, transparent 70%)`;
+      grid.appendChild(cell);
+    }
+  })();
+
+  /* ===== Projects ===== */
+  (function(){
+    const projects = [
+      { type: 'LED · Hà Nội', title: 'Light Up Hanoi', by: 'by Whiterose VN', desc: 'LED billboard tại 3 vị trí trung tâm Hà Nội trong 7 ngày trước sinh nhật.', status: 'On-air', date: '17–23.06', href: '/lightuphanoi' },
+      { type: 'Exhibition', title: 'Threads of Light', by: 'by FS White Petals', desc: 'Triển lãm offline tổng hợp ảnh fansite, mở cửa miễn phí 2 ngày tại TP.HCM.', status: 'Confirmed', date: '21–22.06' },
+      { type: 'Photobooth', title: 'Become a Light', by: 'by FC Sài Gòn', desc: 'Photobooth tương tác với frame BE[X]YOND, in tại chỗ làm quà cho fan offline.', status: 'Booked', date: '22.06' },
+      { type: 'Thiện nguyện', title: '26 Hopes', by: 'by Charity Team', desc: 'Trao 26 phần quà cho trẻ em mồ côi, ghi hình tư liệu trao trực tiếp.', status: 'In progress', date: '15.06' },
+      { type: 'Messbook', title: 'Letters Beyond', by: 'by FS Roseline', desc: 'Tổng hợp 100+ lá thư fan, in thành messbook trao Cường ngày sinh nhật.', status: 'Production', date: '20.06' },
+      { type: 'Stream Nhạc', title: 'Playlist for Cuong', by: 'by Stream Team', desc: 'Playlist chính thức 26 ca khúc, đẩy chỉ số stream xuyên suốt campaign.', status: 'Live', date: '20.05–25.07' },
+      { type: 'LED · Seoul', title: 'Light Beyond Borders', by: 'by Intl Fandom', desc: 'LED billboard Gangnam, 3 ngày trước Debut Day, đồng bộ slogan UPRIZE.', status: 'Pending', date: '22–24.06' },
+      { type: 'IG Ads', title: 'Beyond Stories Ads', by: 'by Fan lẻ', desc: 'Boost 5 bài quan trọng trên IG/Threads, tổng reach >500K dự kiến.', status: 'Active', date: '16.05–23.06' },
+      { type: 'Graffiti', title: 'Butterfly Wall', by: 'by Street Art Team', desc: 'Mural cánh bướm 4×6m hợp tác họa sĩ địa phương, ghi hình quá trình.', status: 'Sketching', date: '01–10.06' },
+      { type: 'Q&A Social', title: 'Tâm sự cùng Cường', by: 'by Whiterose VN', desc: 'Chuỗi 7 đêm Q&A live trên Threads, mỗi đêm một chủ đề trong hành trình.', status: 'Scheduled', date: '15–21.06' },
+      { type: 'Fanbook', title: 'The Light Archive', by: 'by Editorial Team', desc: 'Fanbook ảnh + thư + interview, in bản đặc biệt cho top fan đăng ký.', status: 'Editing', date: '18.06' },
+      { type: 'Offline Event', title: 'Beyond Café Day', by: 'by FC HN+SG', desc: 'Cup-sleeve event tại 2 quán cà phê đối tác ở HN & SG, miễn phí khách check-in.', status: 'Confirmed', date: '22.06' },
+    ];
+
+    const icons = {
+      'LED · Hà Nội': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="5" width="18" height="12" rx="1"/><path d="M8 21h8M12 17v4"/></svg>',
+      'Exhibition': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M8 8l3 3 2-2 3 4"/></svg>',
+      'Photobooth': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="6" width="18" height="14" rx="1"/><circle cx="12" cy="13" r="3"/><path d="M9 6l1-2h4l1 2"/></svg>',
+      'Thiện nguyện': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 21s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 11c0 5.5-7 10-7 10z"/></svg>',
+      'Messbook': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 4h16v16H4z"/><path d="M4 8h16M9 4v16"/></svg>',
+      'Stream Nhạc': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
+      'LED · Seoul': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>',
+      'IG Ads': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>',
+      'Graffiti': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 21h18M5 17l4-4 3 3 7-7 3 3"/></svg>',
+      'Q&A Social': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M21 11.5a8.38 8.38 0 01-8.5 8.5 8.5 8.5 0 01-7-3.7L3 21l4.5-2.5A8.38 8.38 0 0121 11.5z"/></svg>',
+      'Fanbook': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>',
+      'Offline Event': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>'
+    };
+
+    const grid = document.getElementById('projectsGrid');
+    projects.forEach(p => {
+      const card = document.createElement(p.href ? 'a' : 'div');
+      card.className = 'project-card';
+      if (p.href) card.href = p.href;
+      card.innerHTML = `
+        <div class="project-icon">${icons[p.type] || ''}</div>
+        <div class="project-type">${p.type}</div>
+        <div class="project-title">${p.title}</div>
+        <div class="project-by">${p.by}</div>
+        <div class="project-desc">${p.desc}</div>
+        <div class="project-meta">
+          <span>${p.date}</span>
+          <span class="project-status">${p.status}</span>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  })();
+
+  /* ===== Constellation ===== */
+  (function(){
+    const canvas = document.getElementById('constellationCanvas');
+    const svgLines = document.getElementById('constLines');
+
+    // Background twinkling stars
+    for (let i = 0; i < 80; i++) {
+      const s = document.createElement('div');
+      s.className = 'bg-star';
+      s.style.left = Math.random() * 100 + '%';
+      s.style.top = Math.random() * 100 + '%';
+      s.style.animationDelay = Math.random() * 4 + 's';
+      canvas.appendChild(s);
+    }
+
+    // Butterfly-shaped star positions (in % units)
+    // Each star = a project
+    const starProjects = [
+      // Left wing top
+      {x: 22, y: 30, name: 'Light Up Hanoi'},
+      {x: 16, y: 38, name: 'Threads of Light'},
+      {x: 28, y: 25, name: 'Become a Light'},
+      {x: 32, y: 38, name: 'Letters Beyond'},
+      {x: 20, y: 48, name: '26 Hopes'},
+      // Left wing bottom
+      {x: 26, y: 62, name: 'Playlist for Cuong'},
+      {x: 32, y: 72, name: 'Butterfly Wall'},
+      {x: 38, y: 65, name: 'Beyond Café Day'},
+      // Body
+      {x: 50, y: 40, name: 'BE[X]YOND Core'},
+      {x: 50, y: 50, name: 'Whiterose Hub'},
+      {x: 50, y: 62, name: 'The Light Archive'},
+      // Right wing top
+      {x: 78, y: 30, name: 'Light Beyond Borders'},
+      {x: 84, y: 38, name: 'Beyond Stories Ads'},
+      {x: 72, y: 25, name: 'Tâm sự cùng Cường'},
+      {x: 68, y: 38, name: 'Vietnamese Charity'},
+      {x: 80, y: 48, name: 'Intl Fan Letters'},
+      // Right wing bottom
+      {x: 74, y: 62, name: 'Korea LED Project'},
+      {x: 68, y: 72, name: 'Photo Edit Marathon'},
+      {x: 62, y: 65, name: 'TikTok Tribute Trend'},
+      // Antennae
+      {x: 45, y: 18, name: 'Sky Banner Tweet'},
+      {x: 55, y: 18, name: '26 Words Challenge'},
+    ];
+
+    starProjects.forEach((sp, idx) => {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = sp.x + '%';
+      star.style.top = sp.y + '%';
+      star.style.animationDelay = (idx * 0.1) + 's';
+      star.innerHTML = `<div class="core"></div><div class="label">${sp.name}</div>`;
+      // tiny random size variation
+      const size = 6 + Math.random() * 6;
+      star.style.width = size + 'px';
+      star.style.height = size + 'px';
+      canvas.appendChild(star);
+    });
+
+    // Draw faint connecting lines between nearby stars (constellation feel)
+    // SVG viewBox is 100 x 62.5 to match aspect-ratio 16:10
+    const pairs = [
+      [0,1],[0,2],[1,4],[2,3],[3,4],[4,5],[5,6],[6,7],
+      [8,9],[9,10],[10,7],
+      [11,12],[11,13],[13,14],[14,15],[15,16],[16,17],[17,18],
+      [19,20],[19,8],[20,8],
+      [3,8],[8,15],[10,18],[5,10]
+    ];
+    pairs.forEach(([a, b]) => {
+      const A = starProjects[a], B = starProjects[b];
+      if (!A || !B) return;
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      // Convert % to viewBox coords
+      line.setAttribute('x1', A.x * 100 / 100);
+      line.setAttribute('y1', A.y * 62.5 / 100);
+      line.setAttribute('x2', B.x * 100 / 100);
+      line.setAttribute('y2', B.y * 62.5 / 100);
+      svgLines.appendChild(line);
+    });
+  })();
+
+  /* ===== Scroll reveal ===== */
+  (function(){
+    const els = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    els.forEach(el => io.observe(el));
+  })();
+
+  /* ===== Smooth nav highlight on scroll ===== */
+  (function(){
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 80) {
+        nav.style.background = 'rgba(5,5,5,0.92)';
+        nav.style.borderBottom = '1px solid rgba(245,243,240,0.06)';
+      } else {
+        nav.style.background = 'linear-gradient(to bottom, rgba(5,5,5,0.85), transparent)';
+        nav.style.borderBottom = 'none';
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
