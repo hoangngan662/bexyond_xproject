@@ -246,7 +246,7 @@ nav .nav-cta:hover { background: rgba(255,90,106,0.2); color: #fff; }
   color: var(--text);
   font-family: var(--serif);
   font-size: 14px;
-  padding: 12px 16px 12px 42px;
+  padding: 12px 112px 12px 42px;
   outline: none;
   transition: all .3s;
 }
@@ -262,6 +262,41 @@ nav .nav-cta:hover { background: rgba(255,90,106,0.2); color: #fff; }
   transform: translateY(-50%);
   color: var(--text-faint);
   font-size: 18px;
+}
+.filter-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 96px;
+  height: 100%;
+  border: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+  background: rgba(255,255,255,0.02);
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .3s;
+}
+.filter-toggle:hover,
+.filter-toggle.active {
+  border-color: rgba(255,90,106,0.5);
+  background: rgba(255,90,106,0.12);
+  color: var(--rose-soft);
+}
+.filter-panel {
+  display: none;
+  max-width: 1400px;
+  margin: 20px auto 0;
+  padding-top: 2px;
+}
+.filter-panel.show {
+  display: block;
+}
+.filter-panel .toolbar-row {
+  margin-top: 14px;
 }
 .filter-group {
   display: flex;
@@ -307,6 +342,8 @@ nav .nav-cta:hover { background: rgba(255,90,106,0.2); color: #fff; }
 }
 @media (max-width: 768px) {
   .toolbar { padding: 14px 20px; top: 56px; }
+  .search-wrap input { padding-right: 92px; }
+  .filter-toggle { width: 80px; letter-spacing: 0.18em; }
   .toolbar-meta { display: none; }
 }
 
@@ -901,13 +938,20 @@ footer {
   <div class="toolbar-row">
     <div class="search-wrap">
       <input type="text" id="searchInput" placeholder="Tìm project theo tên, FC/FS, mô tả..." />
+      <button class="filter-toggle" id="filterToggle" type="button" aria-expanded="false" aria-controls="filterPanel">Lọc</button>
     </div>
-    <div class="filter-group" id="typeFilters"></div>
   </div>
-  <div class="toolbar-row" style="margin-top: 14px;">
-    <div class="filter-group" id="actorFilters"></div>
-    <div class="filter-group" id="statusFilters"></div>
-    <div class="toolbar-meta" id="resultCount">— projects</div>
+  <div class="filter-panel" id="filterPanel">
+    <div class="toolbar-row">
+      <div class="filter-group" id="typeFilters"></div>
+    </div>
+    <div class="toolbar-row">
+      <div class="filter-group" id="actorFilters"></div>
+    </div>
+    <div class="toolbar-row">
+      <div class="filter-group" id="statusFilters"></div>
+      <div class="toolbar-meta" id="resultCount">— projects</div>
+    </div>
   </div>
 </div>
 
@@ -2447,6 +2491,14 @@ document.getElementById('searchInput').addEventListener('input', e => {
     searchQuery = e.target.value;
     render();
   }, 200);
+});
+
+document.getElementById('filterToggle').addEventListener('click', () => {
+  const panel = document.getElementById('filterPanel');
+  const toggle = document.getElementById('filterToggle');
+  const isOpen = panel.classList.toggle('show');
+  toggle.classList.toggle('active', isOpen);
+  toggle.setAttribute('aria-expanded', String(isOpen));
 });
 
 // ============ SUPABASE DATA ============
