@@ -31,6 +31,7 @@
   --silver: #e0dcd8;
   --line: rgba(245, 240, 236, 0.08);
   --line-strong: rgba(245, 240, 236, 0.14);
+  --libra: 'Libra Serif Modern', 'Libra Serif', 'Cormorant Garamond', serif;
   --condensed: 'Beautique Display Condensed', 'Cormorant Garamond', serif;
   --display: 'Cinzel', serif;
   --serif: 'Cormorant Garamond', serif;
@@ -165,12 +166,16 @@ nav .nav-cta:hover { background: rgba(255,90,106,0.2); color: #fff; }
   font-weight: 600;
   font-size: clamp(36px, 6.5vw, 80px);
   letter-spacing: 0.06em;
-  line-height: 1;
-  margin-bottom: 16px;
+  line-height: 1.18;
+  padding: 0.16em 0 0.08em;
+  margin-bottom: 8px;
   background: linear-gradient(180deg, #fff 0%, #d8c8c0 50%, #807870 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+.hero h1 .hero-libra {
+  font-family: var(--libra);
 }
 .hero h1 em {
   font-family: var(--serif);
@@ -447,9 +452,10 @@ main {
   flex-direction: column;
 }
 .card-title {
-  font-family: var(--display);
+  font-family: var(--serif);
   font-size: 18px;
   letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--text);
   margin-bottom: 6px;
   line-height: 1.25;
@@ -603,6 +609,7 @@ main {
   font-family: var(--display);
   font-size: clamp(24px, 4vw, 38px);
   letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: #fff;
   line-height: 1.15;
   margin-bottom: 6px;
@@ -910,7 +917,7 @@ footer {
 <header class="hero" id="hero">
   <div class="hero-content">
     <div class="hero-tag">Cường Bạch · 26th Birthday × UPRIZE Debut</div>
-    <h1>Mỗi tia sáng — <em>một dự án</em></h1>
+    <h1><span class="hero-libra">MỖI TIA SÁNG</span> — <em>MỘT DỰ ÁN</em></h1>
     <p class="hero-sub">Tập hợp tất cả project của FC, fansite, và fan lẻ trong umbrella campaign BE[X]YOND. Từ một ánh sáng đơn độc — đến cả một bầu trời.</p>
     <div class="hero-stats">
       <div>
