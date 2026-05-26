@@ -3033,8 +3033,10 @@ function layoutHeroRing() {
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
   const cardWidth = isMobile ? 168 : 240;
   const cardHeight = isMobile ? 230 : 330;
-  heroRingAngleStep = 360 / count;
-  heroRingRadius = Math.round((cardWidth / 2) / Math.tan(Math.PI / count) + (isMobile ? 120 : 230));
+  heroRingAngleStep = count > 1 ? 360 / count : 360;
+  heroRingRadius = count > 1
+    ? Math.round((cardWidth / 2) / Math.tan(Math.PI / count) + (isMobile ? 120 : 230))
+    : 0;
 
   container.style.setProperty('--ring-card-w', `${cardWidth}px`);
   container.style.setProperty('--ring-card-h', `${cardHeight}px`);
@@ -3176,7 +3178,11 @@ function startHeroRingLoop() {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function loop() {
     if (!reduceMotion) {
-      if (heroRingAutoSpin && Math.abs(heroRingVelocity) < 0.01) {
+      const slideCount = document.querySelectorAll('#gridContainer .carousel-slide').length;
+      if (slideCount <= 1) {
+        heroRingVelocity = 0;
+        heroRingRotation = 0;
+      } else if (heroRingAutoSpin && Math.abs(heroRingVelocity) < 0.01) {
         heroRingRotation -= 0.12;
       } else {
         heroRingRotation += heroRingVelocity;
