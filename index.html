@@ -940,7 +940,7 @@ main {
   #hero .grid {
     --ring-card-w: 168px;
     --ring-card-h: 230px;
-    top: 59%;
+    top: clamp(45%, 50svh, 54%);
     z-index: 16;
   }
   #hero .hero-overlay {
@@ -956,13 +956,14 @@ main {
   }
   #hero .hero-overlay p.sub {
     font-size: clamp(20px, 5.4vw, 28px);
-    line-height: 1;
+    line-height: 1.12;
   }
   #hero .hero-overlay p.desc {
     display: block;
     width: min(92vw, 430px);
     font-size: clamp(13px, 3.3vw, 15px);
-    line-height: 1.25;
+    line-height: clamp(1.28, 1.8svh, 1.45);
+    margin-top: clamp(2px, 0.7svh, 8px);
   }
   #hero .hero-overlay .hero-stats {
     display: grid;
@@ -971,6 +972,7 @@ main {
     width: min(94vw, 420px);
     justify-items: center;
     align-items: start;
+    margin-top: clamp(4px, 1svh, 10px);
   }
   #hero .hero-overlay .hero-stat-num {
     font-size: clamp(27px, 7.4vw, 38px);
@@ -979,6 +981,7 @@ main {
   #hero .hero-overlay .hero-stat-label {
     font-size: 9px;
     letter-spacing: 0.2em;
+    margin-top: 2px;
   }
   #hero .card-title {
     font-size: 16px;
