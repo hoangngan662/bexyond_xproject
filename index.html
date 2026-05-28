@@ -832,9 +832,12 @@ main {
   inset: 0;
   width: var(--ring-card-w, 240px);
   height: var(--ring-card-h, 330px);
+  min-height: var(--ring-card-h, 330px);
+  max-height: var(--ring-card-h, 330px);
   flex: none;
   backface-visibility: hidden;
   transform-style: preserve-3d;
+  transform-origin: 50% 50%;
   opacity: 1;
   filter: saturate(.9) contrast(1.04);
   transition: border-color .35s ease, box-shadow .35s ease, filter .35s ease;
@@ -848,7 +851,12 @@ main {
   pointer-events: none;
 }
 #hero .card {
+  display: flex;
+  flex-direction: column;
+  width: var(--ring-card-w, 240px);
+  height: var(--ring-card-h, 330px);
   min-height: 0;
+  max-height: var(--ring-card-h, 330px);
   box-shadow: 0 30px 80px rgba(0,0,0,0.52);
   transition: border-color .4s ease, box-shadow .4s ease, filter .4s ease;
 }
@@ -858,21 +866,33 @@ main {
   transform: none;
 }
 #hero .card-img {
+  flex: 0 0 68%;
   height: 68%;
+  min-height: 68%;
   aspect-ratio: auto;
 }
 #hero .card-img img {
   object-fit: cover;
 }
 #hero .card-body {
+  flex: 1 1 32%;
+  min-height: 0;
+  overflow: hidden;
   padding: 16px 17px 18px;
 }
 #hero .card-title {
   font-size: 20px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 #hero .card-by {
   font-size: 13px;
   margin-bottom: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #hero .card-desc,
 #hero .card-foot {
@@ -1370,21 +1390,16 @@ footer {
   border-bottom: 1px solid var(--line);
 }
 .footer-brand .name {
-  font-family: var(--display);
-  font-size: 20px;
-  letter-spacing: 0.15em;
-  background: linear-gradient(180deg, #fff 0%, #b8b0ac 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  display: block;
+  width: min(150px, 70vw);
+  height: auto;
   margin-bottom: 8px;
 }
-.footer-brand .name span {
-  background: linear-gradient(180deg, #ffb0b8 0%, #ff5a6a 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-style: italic;
+.footer-brand .name img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 .footer-brand p {
   font-family: var(--serif);
@@ -1473,10 +1488,7 @@ footer {
       </div>
     </div>
     <div class="grid" id="gridContainer" aria-label="Project carousel"></div>
-    <button class="carousel-nav prev" id="carouselPrev" type="button" aria-label="Xoay carousel sang trái">‹</button>
-    <button class="carousel-nav next" id="carouselNext" type="button" aria-label="Xoay carousel sang phải">›</button>
-    <div class="carousel-hint">Đang xoay · kéo để điều khiển</div>
-  </div>
+     </div>
   <div class="empty-state" id="emptyState" style="display:none;">
     <h3>Không tìm thấy project nào</h3>
     <p>Thử chọn lại bộ lọc, hoặc dùng từ khoá khác để tìm trong bầu trời này.</p>
@@ -1502,7 +1514,7 @@ footer {
 <footer>
   <div class="footer-row">
     <div class="footer-brand">
-      <div class="name">BE<span>[X]</span>YOND</div>
+      <div class="name"><img src="assets/footnote.png" alt="BE[X]YOND"></div>
       <p>Beyond with Cường Bạch — Birthday Project 2026, by Whiterose Fandom. A journey of light, growth, and transformation.</p>
     </div>
     <div style="font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--text-dim); max-width: 280px; text-align: right; line-height: 1.7;">
@@ -3168,6 +3180,8 @@ function layoutHeroRing() {
       const angle = (index - (visibleCount - 1) / 2) * heroRingAngleStep;
       slide.dataset.ringIndex = String(index);
       slide.dataset.ringAngle = String(angle);
+      slide.style.width = `${cardWidth}px`;
+      slide.style.height = `${cardHeight}px`;
       slide.style.transform = `rotateY(${angle}deg) translateZ(${heroRingRadius}px)`;
     });
     allSlides
@@ -3175,6 +3189,8 @@ function layoutHeroRing() {
       .forEach(slide => {
         slide.dataset.ringIndex = '';
         slide.dataset.ringAngle = '';
+        slide.style.width = `${cardWidth}px`;
+        slide.style.height = `${cardHeight}px`;
         slide.style.transform = `translateZ(${heroRingRadius}px)`;
       });
     return;
@@ -3184,6 +3200,8 @@ function layoutHeroRing() {
     const angle = index * heroRingAngleStep;
     slide.dataset.ringIndex = String(index);
     slide.dataset.ringAngle = String(angle);
+    slide.style.width = `${cardWidth}px`;
+    slide.style.height = `${cardHeight}px`;
     slide.style.transform = `rotateY(${angle}deg) translateZ(${heroRingRadius}px)`;
   });
 }
@@ -3590,7 +3608,7 @@ function openModal(p) {
 
       <div class="modal-links">
         <a href="${escapeHTML(p.link)}" class="modal-link" target="_blank" rel="noopener">Xem bài đăng chính</a>
-        <a href="#" class="modal-link secondary">Theo dõi cập nhật</a>
+        <a href="#" class="modal-link secondary">Về trang chủ</a>
       </div>
     </div>
   `;
@@ -3602,6 +3620,12 @@ function openModal(p) {
       if (currentGallery[idx]?.type === 'video') return;
       openLightbox(idx);
     });
+  });
+
+  // Wire "Về trang chủ" link to close modal
+  content.querySelector('.modal-link.secondary')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeModal();
   });
 
   modal.classList.add('show');
