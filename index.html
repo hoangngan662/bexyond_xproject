@@ -1318,7 +1318,7 @@ main {
 }
 .modal-meta {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1px;
   background: var(--line);
   border: 1px solid var(--line);
@@ -3583,10 +3583,6 @@ function openModal(p) {
         <div class="modal-meta-item">
           <div class="k">Khu vực</div>
           <div class="v">${escapeHTML(p.region)}</div>
-        </div>
-        <div class="modal-meta-item">
-          <div class="k">Ngân sách</div>
-          <div class="v rose">${escapeHTML(p.budget)}</div>
         </div>
         <div class="modal-meta-item">
           <div class="k">Trạng thái</div>
