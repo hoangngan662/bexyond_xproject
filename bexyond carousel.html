@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BE[X]YOND — Recap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000000;--ink:#f4eaea;--ink-dim:#9a8a8a;
+    --crimson:#c8102e;--crimson-glow:#ff2545;--rose:#e8b8c0;--silver:#e5dcdc;
+    --line:rgba(232,184,192,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;width:100%;overflow:hidden}
+  body{background:var(--bg);color:var(--ink);font-family:'Cormorant Garamond',serif;-webkit-font-smoothing:antialiased;position:fixed;inset:0}
+  /* ambient red glow */
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(ellipse 70% 55% at 50% 50%,rgba(200,16,46,.14),transparent 60%),radial-gradient(ellipse 50% 40% at 80% 85%,rgba(200,16,46,.06),transparent 60%)}
+  /* film grain */
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.16;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.3 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")}
+
+  /* central glow that "breathes" */
+  .center-glow{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:300px;height:300px;border-radius:50%;pointer-events:none;z-index:1;
+    background:radial-gradient(circle,rgba(255,255,255,.85),rgba(255,37,69,.32) 30%,transparent 70%);filter:blur(8px);animation:breathe 5s ease-in-out infinite}
+  @keyframes breathe{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}50%{opacity:.82;transform:translate(-50%,-50%) scale(1.12)}}
+
+  /* header */
+  header{position:fixed;top:0;left:0;right:0;z-index:40;padding:24px 40px;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+  .logo{font-family:'Cinzel',serif;font-weight:700;font-size:18px;letter-spacing:.15em;color:var(--silver);text-shadow:0 0 18px rgba(255,37,69,.4)}
+  .logo .b{color:var(--crimson-glow);font-weight:900}.logo .x{color:var(--crimson);font-weight:900;font-style:italic}
+  .tagline{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.35em;color:var(--ink-dim);text-transform:uppercase;text-align:right}
+
+  /* title overlay center */
+  .stage-title{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;text-align:center;pointer-events:none;width:min(90vw,520px)}
+  .stage-title .ey{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.45em;color:var(--rose);text-transform:uppercase;margin-bottom:14px}
+  .stage-title h1{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(34px,7vw,72px);letter-spacing:.04em;line-height:1;
+    background:linear-gradient(180deg,#fff,#9a8a8a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 24px rgba(255,37,69,.3))}
+  .stage-title h1 .b{color:var(--crimson-glow);-webkit-text-fill-color:var(--crimson-glow)}
+  .stage-title h1 .x{color:var(--crimson);-webkit-text-fill-color:var(--crimson-glow);font-style:italic}
+  .stage-title .recap{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.4em;color:var(--ink-dim);text-transform:uppercase;margin-top:14px}
+
+  /* ===== 3D CAROUSEL ===== */
+  .scene{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;perspective:1400px;cursor:grab}
+  .scene.dragging{cursor:grabbing}
+  .ring{position:relative;width:200px;height:260px;transform-style:preserve-3d;transition:transform .05s linear}
+  .card{position:absolute;top:0;left:0;width:200px;height:260px;backface-visibility:hidden;
+    border:1px solid var(--line);background:linear-gradient(180deg,rgba(20,8,12,.5),rgba(0,0,0,.4));
+    cursor:pointer;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.4);transition:border-color .4s ease,box-shadow .4s ease}
+  .card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.85));pointer-events:none}
+  .card:hover{border-color:var(--crimson-glow);box-shadow:0 0 30px rgba(255,37,69,.4),0 0 0 1px var(--crimson-glow)}
+  .card img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.92) contrast(1.05)}
+  .card .cap{position:absolute;left:0;right:0;bottom:0;padding:14px;z-index:2}
+  .card .cap .ct{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.25em;color:var(--crimson-glow);text-transform:uppercase;margin-bottom:5px}
+  .card .cap .cn{font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.1;color:var(--silver);font-weight:500}
+
+  /* controls */
+  .controls{position:fixed;bottom:36px;left:50%;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:18px}
+  .ctrl-btn{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:rgba(0,0,0,.4);backdrop-filter:blur(8px);color:var(--ink-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
+  .ctrl-btn:hover{color:var(--ink);border-color:var(--crimson-glow);box-shadow:0 0 18px rgba(255,37,69,.3)}
+  .ctrl-btn svg{width:18px;height:18px}
+  .ctrl-hint{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.3em;color:var(--ink-dim);text-transform:uppercase}
+
+  /* ===== LIGHTBOX ===== */
+  .lightbox{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.86);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;padding:40px;opacity:0;pointer-events:none;transition:opacity .45s ease}
+  .lightbox.open{opacity:1;pointer-events:auto}
+  .lb-inner{display:flex;max-width:1000px;width:100%;max-height:84vh;border:1px solid var(--line);background:linear-gradient(180deg,rgba(20,8,12,.85),rgba(0,0,0,.7));transform:scale(.94);transition:transform .45s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden}
+  .lightbox.open .lb-inner{transform:scale(1)}
+  .lb-inner::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--crimson-glow),transparent);z-index:3}
+  .lb-img{flex:1.3;min-width:0;position:relative;background:#000}
+  .lb-img img{width:100%;height:100%;object-fit:cover;display:block;max-height:84vh}
+  .lb-info{flex:1;padding:48px 44px;display:flex;flex-direction:column;justify-content:center;min-width:280px}
+  .lb-cat{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.35em;color:var(--crimson-glow);text-transform:uppercase;margin-bottom:18px}
+  .lb-cat::before{content:"✦  "}
+  .lb-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,4vw,46px);line-height:1.05;color:var(--silver);margin-bottom:28px}
+  .lb-meta{display:flex;flex-direction:column;gap:16px;border-top:1px solid var(--line);padding-top:26px}
+  .lb-row{display:flex;align-items:flex-start;gap:14px}
+  .lb-row svg{width:15px;height:15px;color:var(--crimson-glow);margin-top:3px;flex-shrink:0;opacity:.8}
+  .lb-row .lbl{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.25em;color:var(--ink-dim);text-transform:uppercase;display:block;margin-bottom:3px}
+  .lb-row .val{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--ink)}
+  .lb-close{position:absolute;top:18px;right:18px;z-index:5;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:rgba(0,0,0,.5);color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;font-size:20px;font-family:'Inter',sans-serif}
+  .lb-close:hover{border-color:var(--crimson-glow);color:var(--crimson-glow);transform:rotate(90deg)}
+  .lb-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:rgba(0,0,0,.5);color:var(--ink-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
+  .lb-nav:hover{color:var(--ink);border-color:var(--crimson-glow)}
+  .lb-nav svg{width:18px;height:18px}
+  .lb-prev{left:-64px}.lb-next{right:-64px}
+
+  .intro-fade{animation:introFade 1.4s ease forwards}
+  @keyframes introFade{from{opacity:0}to{opacity:1}}
+
+  @media (max-width:760px){
+    header{padding:18px 20px}.tagline{display:none}
+    .lb-inner{flex-direction:column;max-height:88vh}
+    .lb-img{flex:none;height:40vh}.lb-img img{max-height:40vh}
+    .lb-info{padding:28px 26px}
+    .lb-prev{left:8px}.lb-next{right:8px}.lb-nav{width:40px;height:40px}
+    .stage-title{top:16%}
+  }
+</style>
+</head>
+<body>
+
+<div class="center-glow"></div>
+
+<header>
+  <div class="logo">BE<span class="b">[</span><span class="x">X</span><span class="b">]</span>YOND</div>
+  <div class="tagline">Recap · Beyond with Cường Bạch</div>
+</header>
+
+<div class="stage-title intro-fade">
+  <div class="ey">Cường Bạch · 26th Birthday</div>
+  <h1>BE<span class="b">[</span><span class="x">X</span><span class="b">]</span>YOND</h1>
+  <div class="recap">— Project Recap —</div>
+</div>
+
+<div class="scene" id="scene">
+  <div class="ring" id="ring"></div>
+</div>
+
+<div class="controls">
+  <button class="ctrl-btn" id="prevBtn" title="Quay trái">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <span class="ctrl-hint" id="playHint">Đang xoay · kéo để tự điều khiển</span>
+  <button class="ctrl-btn" id="nextBtn" title="Quay phải">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-nav lb-prev" id="lbPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+  <div class="lb-inner">
+    <button class="lb-close" id="lbClose">✕</button>
+    <div class="lb-img"><img id="lbImg" src="" alt="" /></div>
+    <div class="lb-info">
+      <div class="lb-cat" id="lbCat"></div>
+      <div class="lb-name" id="lbName"></div>
+      <div class="lb-meta">
+        <div class="lb-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <div><span class="lbl">Thực hiện</span><span class="val" id="lbTeam"></span></div>
+        </div>
+        <div class="lb-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div><span class="lbl">Địa điểm</span><span class="val" id="lbLoc"></span></div>
+        </div>
+        <div class="lb-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <div><span class="lbl">Thời gian</span><span class="val" id="lbTime"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="lb-nav lb-next" id="lbNext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+</div>
+
+<script>
+  /* ============================================================
+     DATA — thay link ảnh thật vào "img" ở đây.
+     Hiện dùng ảnh placeholder SVG nền đen-đỏ.
+     ============================================================ */
+  function placeholder(label, hue){
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='520'>
+      <defs><radialGradient id='g' cx='50%' cy='35%' r='75%'>
+        <stop offset='0%' stop-color='hsl(${hue},70%,18%)'/>
+        <stop offset='55%' stop-color='hsl(${hue},60%,7%)'/>
+        <stop offset='100%' stop-color='#000'/>
+      </radialGradient></defs>
+      <rect width='400' height='520' fill='url(#g)'/>
+      <circle cx='200' cy='180' r='60' fill='none' stroke='hsl(${hue},80%,55%)' stroke-width='1' opacity='.5'/>
+      <circle cx='200' cy='180' r='6' fill='hsl(${hue},90%,70%)'/>
+      <text x='200' y='300' fill='hsl(${hue},30%,80%)' font-family='Georgia,serif' font-size='22' text-anchor='middle' opacity='.7'>${label}</text>
+    </svg>`;
+    return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+  }
+
+  const CATS = {media:"Media",event:"Sự kiện",charity:"Thiện nguyện",gift:"Quà tặng",ads:"Quảng bá"};
+
+  const projects = [
+    {name:"Birthday Trailer Video",  cat:"media",   team:"Whiterose Visual Team", location:"Online", time:"01.06 – 15.06", img:placeholder("Trailer", 0)},
+    {name:"Photo Editing Contest",   cat:"media",   team:"Fan Art Group",         location:"Online", time:"05.06 – 20.06", img:placeholder("Photo Contest", 345)},
+    {name:"Cup Sleeve Event HCM",    cat:"event",   team:"Team Event HCM",        location:"HCM",    time:"22.06",         img:placeholder("Cup Sleeve HCM", 350)},
+    {name:"Cup Sleeve Event Hà Nội", cat:"event",   team:"Team Event HN",         location:"HN",     time:"23.06",         img:placeholder("Cup Sleeve HN", 340)},
+    {name:"Đêm chiếu phim sinh nhật",cat:"event",   team:"Whiterose HCM",         location:"HCM",    time:"24.06",         img:placeholder("Movie Night", 355)},
+    {name:"Tặng học bổng",           cat:"charity", team:"Ban Thiện Nguyện",      location:"HCM",    time:"01.06 – 30.06", img:placeholder("Học bổng", 200)},
+    {name:"Trồng cây cùng Cường",    cat:"charity", team:"Team Xanh",             location:"HN",     time:"08.06",         img:placeholder("Trồng cây", 140)},
+    {name:"Photobook 'Beyond'",      cat:"gift",    team:"Goods Team",            location:"Online", time:"Pre-order 10.05",img:placeholder("Photobook", 320)},
+    {name:"Bộ Freebies sinh nhật",   cat:"gift",    team:"Design Team",           location:"HCM & HN",time:"Phát 22–24.06",img:placeholder("Freebies", 290)},
+    {name:"LED Bitexco — HCM",       cat:"ads",     team:"Ban Booking",           location:"HCM",    time:"20.06 – 26.06", img:placeholder("LED Bitexco", 10)},
+    {name:"Billboard Lotte Hà Nội",  cat:"ads",     team:"Ban Booking",           location:"HN",     time:"20.06 – 26.06", img:placeholder("Billboard HN", 15)},
+    {name:"Banner sân bay TSN",      cat:"ads",     team:"Ban Booking",           location:"HCM",    time:"22.06 – 24.06", img:placeholder("Airport Banner", 5)}
+  ];
+
+  /* ============================================================
+     BUILD 3D RING
+     ============================================================ */
+  const ring = document.getElementById("ring");
+  const scene = document.getElementById("scene");
+  const N = projects.length;
+  const angleStep = 360 / N;
+  const radius = Math.round((100 / Math.tan(Math.PI / N)) + 180);
+
+  projects.forEach((p, i) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.style.transform = `rotateY(${i * angleStep}deg) translateZ(${radius}px)`;
+    card.dataset.index = i;
+    card.innerHTML = `
+      <img src="${p.img}" alt="${p.name}" loading="lazy"/>
+      <div class="cap">
+        <div class="ct">${CATS[p.cat]||""}</div>
+        <div class="cn">${p.name}</div>
+      </div>
+    `;
+    card.addEventListener("click", () => { if(!justDragged) openLightbox(i); });
+    ring.appendChild(card);
+  });
+
+  /* ============================================================
+     ROTATION (auto + drag)
+     ============================================================ */
+  let rotation = 0;
+  let autoSpin = true;
+  const autoSpeed = 0.12;
+  let velocity = 0;
+
+  function tilt(){ return -8; }
+
+  function applyTransform(){
+    ring.style.transform = `translateZ(-${radius}px) rotateX(${tilt()}deg) rotateY(${rotation}deg)`;
+  }
+
+  function loop(){
+    if(autoSpin && Math.abs(velocity) < 0.01){
+      rotation += autoSpeed;
+    } else {
+      rotation += velocity;
+      velocity *= 0.94;
+      if(Math.abs(velocity) < 0.01) velocity = 0;
+    }
+    applyTransform();
+    requestAnimationFrame(loop);
+  }
+  applyTransform();
+  loop();
+
+  // Drag / swipe
+  let isDown = false, startX = 0, lastX = 0, justDragged = false, dragDist = 0;
+  function onDown(x){ isDown = true; startX = x; lastX = x; dragDist = 0; autoSpin = false; scene.classList.add("dragging"); }
+  function onMove(x){
+    if(!isDown) return;
+    const dx = x - lastX; lastX = x; dragDist += Math.abs(dx);
+    rotation += dx * 0.4; velocity = dx * 0.4; applyTransform();
+  }
+  function onUp(){
+    if(!isDown) return;
+    isDown = false; scene.classList.remove("dragging");
+    justDragged = dragDist > 6;
+    setTimeout(()=>{ justDragged = false; }, 60);
+    clearTimeout(window._idle);
+    window._idle = setTimeout(()=>{ autoSpin = true; }, 2600);
+  }
+
+  scene.addEventListener("mousedown", e => onDown(e.clientX));
+  window.addEventListener("mousemove", e => onMove(e.clientX));
+  window.addEventListener("mouseup", onUp);
+  scene.addEventListener("touchstart", e => onDown(e.touches[0].clientX), {passive:true});
+  scene.addEventListener("touchmove", e => onMove(e.touches[0].clientX), {passive:true});
+  scene.addEventListener("touchend", onUp);
+
+  document.getElementById("prevBtn").addEventListener("click", () => { autoSpin=false; velocity = -angleStep*0.5; clearTimeout(window._idle); window._idle=setTimeout(()=>autoSpin=true,2600); });
+  document.getElementById("nextBtn").addEventListener("click", () => { autoSpin=false; velocity = angleStep*0.5; clearTimeout(window._idle); window._idle=setTimeout(()=>autoSpin=true,2600); });
+
+  /* ============================================================
+     LIGHTBOX
+     ============================================================ */
+  const lb = document.getElementById("lightbox");
+  let currentIndex = 0;
+
+  function openLightbox(i){
+    currentIndex = i; fillLightbox(); lb.classList.add("open"); autoSpin = false;
+  }
+  function fillLightbox(){
+    const p = projects[currentIndex];
+    document.getElementById("lbImg").src = p.img;
+    document.getElementById("lbImg").alt = p.name;
+    document.getElementById("lbCat").textContent = CATS[p.cat]||"";
+    document.getElementById("lbName").textContent = p.name;
+    document.getElementById("lbTeam").textContent = p.team;
+    document.getElementById("lbLoc").textContent = p.location;
+    document.getElementById("lbTime").textContent = p.time;
+  }
+  function closeLightbox(){ lb.classList.remove("open"); clearTimeout(window._idle); window._idle=setTimeout(()=>autoSpin=true,1500); }
+  function nextLb(){ currentIndex = (currentIndex+1)%N; fillLightbox(); }
+  function prevLb(){ currentIndex = (currentIndex-1+N)%N; fillLightbox(); }
+
+  document.getElementById("lbClose").addEventListener("click", closeLightbox);
+  document.getElementById("lbNext").addEventListener("click", nextLb);
+  document.getElementById("lbPrev").addEventListener("click", prevLb);
+  lb.addEventListener("click", e => { if(e.target === lb) closeLightbox(); });
+  window.addEventListener("keydown", e => {
+    if(!lb.classList.contains("open")) return;
+    if(e.key === "Escape") closeLightbox();
+    if(e.key === "ArrowRight") nextLb();
+    if(e.key === "ArrowLeft") prevLb();
+  });
+</script>
+</body>
+</html>
