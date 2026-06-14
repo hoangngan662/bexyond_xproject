@@ -1594,7 +1594,6 @@ footer {
       <div class="filter-group" id="actorFilters"></div>
     </div>
     <div class="toolbar-row">
-      <div class="filter-group" id="statusFilters"></div>
       <div class="toolbar-meta" id="resultCount">— projects</div>
     </div>
   </div>
@@ -2407,20 +2406,9 @@ function isSupabaseConfigured() {
 }
 
 const ACTOR_LABEL = { FC: 'FC', FS: 'Fansite', Individual: 'Fan lẻ' };
-const STATUS_LABEL = {
-  live: 'Đang chạy',
-  active: 'Đang triển khai',
-  confirmed: 'Đã xác nhận',
-  pending: 'Chờ duyệt',
-  done: 'Hoàn thành',
-};
 
 function getActorLabel(actor) {
   return ACTOR_LABEL[actor] || actor || 'KhÃ¡c';
-}
-
-function getStatusLabel(status) {
-  return STATUS_LABEL[status] || status || 'Cáº­p nháº­t';
 }
 
 function escapeHTML(value) {
@@ -2566,7 +2554,6 @@ function normalizeProject(row) {
     type: row.type || 'Project',
     by: row.by_name || row.by || '',
     actor: row.actor || 'KhÃ¡c',
-    status: row.status || 'active',
     desc: row.descr || row.desc || '',
     region: row.region || 'Cáº­p nháº­t',
     date: row.date || 'Cáº­p nháº­t',
@@ -2626,30 +2613,35 @@ function rebuildFilters() {
   const types = new Set(PROJECTS.map(p => p.type));
   const actors = new Set(PROJECTS.map(p => p.actor));
   const actorFilterValues = new Set(PROJECTS.map(getActorFilterValue));
-  const statuses = new Set(PROJECTS.map(p => p.status));
-  if (filterType !== 'all' && !types.has(filterType)) filterType = 'all';
-  if (filterActor !== 'all' && !actors.has(filterActor) && !actorFilterValues.has(filterActor)) filterActor = 'all';
-  if (filterStatus !== 'all' && !statuses.has(filterStatus)) filterStatus = 'all';
-  ['typeFilters', 'actorFilters', 'statusFilters'].forEach(id => {
+
+  if (filterType !== 'all' && !types.has(filterType))
+    filterType = 'all';
+
+  if (
+    filterActor !== 'all' &&
+    !actors.has(filterActor) &&
+    !actorFilterValues.has(filterActor)
+  )
+    filterActor = 'all';
+
+  ['typeFilters', 'actorFilters'].forEach(id => {
     document.getElementById(id).innerHTML = '';
   });
+
   initFilters();
   updateFilters('type');
   updateFilters('actor');
-  updateFilters('status');
 }
 
 // ============ STATE ============
 let filterType = 'all';
 let filterActor = 'all';
-let filterStatus = 'all';
 let searchQuery = '';
 let currentView = 'ring'; // 'ring' or 'grid'
 
 function isFilteredView() {
   return filterType !== 'all' ||
     filterActor !== 'all' ||
-    filterStatus !== 'all' ||
     Boolean(searchQuery.trim());
 }
 
@@ -2657,10 +2649,8 @@ function isFilteredView() {
 function initFilters() {
   const typeContainer = document.getElementById('typeFilters');
   const actorContainer = document.getElementById('actorFilters');
-  const statusContainer = document.getElementById('statusFilters');
   const types = [...new Set(PROJECTS.map(p => p.type).filter(Boolean))];
   const actorFilters = buildActorFilters();
-  const statuses = [...new Set(PROJECTS.map(p => p.status).filter(Boolean))];
 
   // Type filters
   const allBtn = createFilterBtn('all', 'Tất cả', PROJECTS.length, true);
@@ -2683,16 +2673,6 @@ function initFilters() {
     actorContainer.appendChild(btn);
   });
 
-  // Status filters
-  const allStatus = createFilterBtn('all', 'Mọi trạng thái', PROJECTS.length, true);
-  allStatus.addEventListener('click', () => { filterStatus = 'all'; updateFilters('status'); render(); });
-  statusContainer.appendChild(allStatus);
-  statuses.forEach(s => {
-    const count = PROJECTS.filter(p => p.status === s).length;
-    const btn = createFilterBtn(s, getStatusLabel(s), count);
-    btn.addEventListener('click', () => { filterStatus = s; updateFilters('status'); render(); });
-    statusContainer.appendChild(btn);
-  });
 }
 
 function createFilterBtn(value, label, count, active = false) {
@@ -2704,10 +2684,13 @@ function createFilterBtn(value, label, count, active = false) {
 }
 
 function updateFilters(group) {
-  const containerId = group === 'type' ? 'typeFilters' :
-                      group === 'actor' ? 'actorFilters' : 'statusFilters';
-  const value = group === 'type' ? filterType :
-                group === 'actor' ? filterActor : filterStatus;
+  const containerId = group === 'type'
+    ? 'typeFilters'
+    : 'actorFilters';
+
+  const value = group === 'type'
+    ? filterType
+    : filterActor;
   document.querySelectorAll(`#${containerId} .filter-btn`).forEach(b => {
     b.classList.toggle('active', b.dataset.value === value);
   });
@@ -2719,7 +2702,6 @@ function getFiltered() {
   return PROJECTS.filter(p => {
     if (filterType !== 'all' && p.type !== filterType) return false;
     if (filterActor !== 'all' && p.actor !== filterActor && getActorFilterValue(p) !== filterActor) return false;
-    if (filterStatus !== 'all' && p.status !== filterStatus) return false;
     if (q) {
       const text = (p.title + ' ' + p.by + ' ' + p.desc + ' ' + p.type + ' ' + p.region).toLowerCase();
       if (!text.includes(q)) return false;
@@ -2775,7 +2757,6 @@ function createProjectCard(p, extraClass = '', options = {}) {
     <div class="card-img">
       <img src="${escapeHTML(p.img)}" alt="${escapeHTML(p.title)}" loading="lazy">
       <div class="card-type">${escapeHTML(p.type)}</div>
-      <div class="card-status ${safeClassName(p.status)}">${escapeHTML(getStatusLabel(p.status))}</div>
     </div>
     <div class="card-body">
       <div class="card-title">${escapeHTML(p.title)}</div>
@@ -2835,16 +2816,12 @@ function createGridCard(p) {
   slide.dataset.filterMatch = 'true';
   slide.dataset.carouselKey = `project-${p.id}`;
 
-  const statusLabel = getStatusLabel(p.status);
-  const statusClass = safeClassName(p.status);
-
   try {
     slide.innerHTML = `
       <div class="card">
         <div class="card-img">
           <img src="${escapeHTML(p.img)}" alt="${escapeHTML(p.title)}" loading="lazy">
           <div class="card-type">${escapeHTML(p.type)}</div>
-          <div class="card-status ${statusClass}">${escapeHTML(statusLabel)}</div>
         </div>
         <div class="card-body">
           <div class="card-title">${escapeHTML(p.title)}</div>
@@ -3589,10 +3566,6 @@ function openModal(p) {
           <div class="k">Khu vực</div>
           <div class="v">${escapeHTML(p.region)}</div>
         </div>
-        <div class="modal-meta-item">
-          <div class="k">Trạng thái</div>
-          <div class="v">${escapeHTML(getStatusLabel(p.status))}</div>
-        </div>
       </div>
 
       <div class="modal-section">
@@ -3745,7 +3718,7 @@ async function setProjects(rows) {
 async function loadProjectsFromSupabase() {
   const { data, error } = await supabaseClient
     .from(PROJECTS_TABLE)
-    .select('id,title,type,by_name,actor,status,descr,region,date,budget,target,link,img,gallery,created_at')
+    .select('id,title,type,by_name,actor,descr,region,date,budget,target,link,img,gallery,created_at')
     .order('created_at', { ascending: false });
 
   if (error) throw error;
