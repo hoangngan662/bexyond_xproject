@@ -2863,86 +2863,6 @@ function switchView(view) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function render() {
-  if (currentView === 'grid') {
-    renderGridView();
-    return;
-  }
-
-  const filtered = getFiltered();
-  const container = document.getElementById('gridContainer');
-  const shell = container.closest('.carousel-shell');
-  const empty = document.getElementById('emptyState');
-  const filteredView = isFilteredView();
-  container.innerHTML = '';
-  shell.classList.remove('is-filtered');
-  if (filteredView) {
-    heroRingAutoSpin = false;
-    heroRingVelocity = 0;
-  } else if (!isProjectOverlayOpen()) {
-    heroRingAutoSpin = true;
-  }
-
-  if (filtered.length === 0) {
-    empty.style.display = 'block';
-    shell.style.display = 'none';
-    container.style.display = 'none';
-  } else {
-    empty.style.display = 'none';
-    shell.style.display = 'flex';
-    container.style.display = 'flex';
-
-    filtered.slice(-2).forEach(p => {
-      container.appendChild(createProjectCard(p, 'is-leading-clone is-clone', { clone: true }));
-    });
-
-    const hero = document.createElement('section');
-    hero.className = 'carousel-slide hero-slide is-active';
-    hero.dataset.carouselKey = 'hero';
-    hero.innerHTML = `
-      <div class="carousel-hero">
-        <img class="intro-logo" src="assets/LOGO-NOTAGLINE.png" alt="BE[X]YOND Logo">
-        <p class="sub">[X] Project</p>
-        <p class="desc">Tập hợp tất cả project của FC, fansite, và fan lẻ trong umbrella campaign BE[X]YOND.<br>Từ một ánh sáng đơn độc — đến cả một bầu trời.</p>
-        <div class="hero-stats">
-          <div>
-            <div class="hero-stat-num" id="statTotal">—</div>
-            <div class="hero-stat-label">Projects</div>
-          </div>
-          <div>
-            <div class="hero-stat-num" id="statCountries">—</div>
-            <div class="hero-stat-label">Quốc gia</div>
-          </div>
-          <div>
-            <div class="hero-stat-num" id="statLedScreens">—</div>
-            <div class="hero-stat-label">Màn LED</div>
-          </div>
-        </div>
-      </div>
-    `;
-    container.appendChild(hero);
-
-    filtered.forEach(p => {
-      container.appendChild(createProjectCard(p));
-    });
-
-    container.appendChild(createHeroSlide(true));
-    filtered.slice(0, 2).forEach(p => {
-      container.appendChild(createProjectCard(p, 'is-trailing-clone is-clone', { clone: true }));
-    });
-  }
-
-  document.getElementById('resultCount').textContent = `${filtered.length} / ${PROJECTS.length} projects`;
-  requestAnimationFrame(() => {
-    const hero = container.querySelector('.hero-slide');
-    if (hero) {
-      centerCarouselSlide(hero);
-    }
-    updateCarouselActive();
-    initStats();
-  });
-}
-
 let carouselLoopTimer = null;
 let carouselIsJumping = false;
 
@@ -3403,6 +3323,10 @@ function initHeroRingDrag() {
 }
 
 function render() {
+  if (currentView === 'grid') {
+    renderGridView();
+    return;
+  }
   const filtered = getFiltered();
   const container = document.getElementById('gridContainer');
   const shell = container.closest('.carousel-shell');
