@@ -1591,9 +1591,6 @@ footer {
       <div class="filter-group" id="typeFilters"></div>
     </div>
     <div class="toolbar-row">
-      <div class="filter-group" id="actorFilters"></div>
-    </div>
-    <div class="toolbar-row">
       <div class="toolbar-meta" id="resultCount">— projects</div>
     </div>
   </div>
@@ -2408,7 +2405,7 @@ function isSupabaseConfigured() {
 const ACTOR_LABEL = { FC: 'FC', FS: 'Fansite', Individual: 'Fan lẻ' };
 
 function getActorLabel(actor) {
-  return ACTOR_LABEL[actor] || actor || 'KhÃ¡c';
+  return ACTOR_LABEL[actor] || actor || 'Khác';
 }
 
 function escapeHTML(value) {
@@ -2580,99 +2577,43 @@ async function resolveProjectDriveGallery(project) {
   return project;
 }
 
-function getActorFilterValue(project) {
-  if (project.actor === 'Individual') {
-    return `individual:${project.by || project.id || 'unknown'}`;
-  }
-  return project.actor || 'Khác';
-}
-
-function getActorFilterLabel(project) {
-  if (project.actor === 'Individual') return project.by || getActorLabel(project.actor);
-  return getActorLabel(project.actor);
-}
-
-function buildActorFilters() {
-  const map = new Map();
-  PROJECTS.forEach(project => {
-    const value = getActorFilterValue(project);
-    if (!value) return;
-    if (!map.has(value)) {
-      map.set(value, { value, label: getActorFilterLabel(project), count: 0, actor: project.actor });
-    }
-    map.get(value).count += 1;
-  });
-  return [...map.values()].sort((a, b) => {
-    const order = { FC: 0, FS: 1, Individual: 2 };
-    const byGroup = (order[a.actor] ?? 9) - (order[b.actor] ?? 9);
-    return byGroup || a.label.localeCompare(b.label, 'vi');
-  });
-}
-
 function rebuildFilters() {
   const types = new Set(PROJECTS.map(p => p.type));
-  const actors = new Set(PROJECTS.map(p => p.actor));
-  const actorFilterValues = new Set(PROJECTS.map(getActorFilterValue));
 
   if (filterType !== 'all' && !types.has(filterType))
     filterType = 'all';
 
-  if (
-    filterActor !== 'all' &&
-    !actors.has(filterActor) &&
-    !actorFilterValues.has(filterActor)
-  )
-    filterActor = 'all';
-
-  ['typeFilters', 'actorFilters'].forEach(id => {
-    document.getElementById(id).innerHTML = '';
-  });
+  document.getElementById('typeFilters').innerHTML = '';
 
   initFilters();
-  updateFilters('type');
-  updateFilters('actor');
+  updateFilters();
 }
 
 // ============ STATE ============
 let filterType = 'all';
-let filterActor = 'all';
 let searchQuery = '';
 let currentView = 'ring'; // 'ring' or 'grid'
 
 function isFilteredView() {
   return filterType !== 'all' ||
-    filterActor !== 'all' ||
     Boolean(searchQuery.trim());
 }
 
 // ============ INIT FILTERS ============
 function initFilters() {
   const typeContainer = document.getElementById('typeFilters');
-  const actorContainer = document.getElementById('actorFilters');
   const types = [...new Set(PROJECTS.map(p => p.type).filter(Boolean))];
-  const actorFilters = buildActorFilters();
 
   // Type filters
   const allBtn = createFilterBtn('all', 'Tất cả', PROJECTS.length, true);
-  allBtn.addEventListener('click', () => { filterType = 'all'; updateFilters('type'); render(); });
+  allBtn.addEventListener('click', () => { filterType = 'all'; updateFilters(); render(); });
   typeContainer.appendChild(allBtn);
   types.forEach(t => {
     const count = PROJECTS.filter(p => p.type === t).length;
     const btn = createFilterBtn(t, t, count);
-    btn.addEventListener('click', () => { filterType = t; updateFilters('type'); render(); });
+    btn.addEventListener('click', () => { filterType = t; updateFilters(); render(); });
     typeContainer.appendChild(btn);
   });
-
-  // Actor filters
-  const allActor = createFilterBtn('all', 'Mọi đối tượng', PROJECTS.length, true);
-  allActor.addEventListener('click', () => { filterActor = 'all'; updateFilters('actor'); render(); });
-  actorContainer.appendChild(allActor);
-  actorFilters.forEach(item => {
-    const btn = createFilterBtn(item.value, item.label, item.count);
-    btn.addEventListener('click', () => { filterActor = item.value; updateFilters('actor'); render(); });
-    actorContainer.appendChild(btn);
-  });
-
 }
 
 function createFilterBtn(value, label, count, active = false) {
@@ -2683,16 +2624,9 @@ function createFilterBtn(value, label, count, active = false) {
   return btn;
 }
 
-function updateFilters(group) {
-  const containerId = group === 'type'
-    ? 'typeFilters'
-    : 'actorFilters';
-
-  const value = group === 'type'
-    ? filterType
-    : filterActor;
-  document.querySelectorAll(`#${containerId} .filter-btn`).forEach(b => {
-    b.classList.toggle('active', b.dataset.value === value);
+function updateFilters() {
+  document.querySelectorAll('#typeFilters .filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.value === filterType);
   });
 }
 
@@ -2701,7 +2635,6 @@ function getFiltered() {
   const q = searchQuery.trim().toLowerCase();
   return PROJECTS.filter(p => {
     if (filterType !== 'all' && p.type !== filterType) return false;
-    if (filterActor !== 'all' && p.actor !== filterActor && getActorFilterValue(p) !== filterActor) return false;
     if (q) {
       const text = (p.title + ' ' + p.by + ' ' + p.desc + ' ' + p.type + ' ' + p.region).toLowerCase();
       if (!text.includes(q)) return false;
