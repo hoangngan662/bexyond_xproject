@@ -529,7 +529,7 @@ main {
   align-items: center;
   background:
     radial-gradient(circle at 50% 18%, rgba(255,90,106,0.18), transparent 34%),
-    radial-gradient(ellipse at center, rgba(18,4,10,0.9) 0%, rgba(0,0,0,0.96) 72%);
+    radial-gradient(ellipse at center, rgba(18,4,10,0.88) 0%, rgba(0,0,0,0.94) 72%);
   perspective: 1400px;
 }
 
@@ -1565,6 +1565,9 @@ footer {
 </head>
 <body>
 
+<!-- ===== GALAXY CANVAS ===== -->
+<canvas id="galaxyCanvas" style="position:fixed;inset:0;z-index:0;pointer-events:none;"></canvas>
+
 <!-- ===== NAV ===== -->
 <nav>
   <a class="logo" href="index.html" aria-label="Về trang chủ"><img src="assets/h3t.png" alt="H3T.ONLYFORCB"></a>
@@ -1581,7 +1584,7 @@ footer {
 <div class="toolbar">
   <div class="toolbar-row">
     <div class="search-wrap">
-      <input type="text" id="searchInput" placeholder="Tìm project theo tên, FC/FS, mô tả..." />
+      <input type="text" id="searchInput" placeholder="Tìm project" />
       <button class="filter-toggle" id="filterToggle" type="button" aria-expanded="false" aria-controls="filterPanel">Lọc</button>
     </div>
     <button class="view-toggle-btn" id="viewToggleBtn" title="Toggle View">☰</button>
@@ -1650,15 +1653,15 @@ footer {
   <div class="footer-row">
     <div class="footer-brand">
       <div class="name"><img src="assets/footnote.png" alt="BE[X]YOND"></div>
-      <p>Beyond with Cường Bạch — Birthday Project 2026, by Whiterose Fandom. A journey of light, growth, and transformation.</p>
+      <p>Beyond with Cường Bạch — 26th Birthday Project, by Whiterose Fandom. A journey of light, growth, and transformation.</p>
     </div>
     <div style="font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--text-dim); max-width: 280px; text-align: right; line-height: 1.7;">
       "Beyond seeing you, we choose to stay for the journey."
     </div>
   </div>
   <div class="footer-bottom">
-    <div>© 2026 Whiterose Fandom · All rights reserved</div>
-    <div class="hashtags">#BEXYOND_CuongBach · #BeyondWithCuongBach</div>
+    <div>© 2026 H3T Only For Cuong Bach · All rights reserved</div>
+    <div class="hashtags">#BEXYONDWithCuongBach · #CuongBach26thBirthday</div>
   </div>
 </footer>
 
@@ -3680,6 +3683,120 @@ function initStats() {
   if (countriesEl) animateNumber(countriesEl, s.countries);
   if (ledScreensEl) animateNumber(ledScreensEl, s.ledScreens);
 }
+
+// ============ STARFIELD BACKGROUND ============
+(function initStarfield() {
+  const canvas = document.getElementById('galaxyCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let W, H;
+  let stars = [];
+  let shootingStars = [];
+  let lastShot = 0;
+
+  // ── Resize ───────────────────────────────────────────────
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    buildStars();
+  }
+
+  // ── Stars: rải ngẫu nhiên toàn màn hình ──────────────────
+  function buildStars() {
+    stars = [];
+    for (let i = 0; i < 900; i++) {
+      stars.push({
+        x:     Math.random() * W,
+        y:     Math.random() * H,
+        size:  Math.random() < 0.05 ? 1.6 + Math.random() * 1.0 : 0.3 + Math.random() * 0.9,
+        alpha: 0.3 + Math.random() * 0.7,
+        speed: 0.5 + Math.random() * 2.0,   // twinkle speed
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  // ── Shooting stars ────────────────────────────────────────
+  function spawnShootingStar() {
+    // xuất phát từ nửa trên màn hình, bay chéo xuống-phải
+    const sx    = Math.random() * W * 0.75;
+    const sy    = Math.random() * H * 0.45;
+    const angle = (18 + Math.random() * 30) * Math.PI / 180;
+    const speed = 9 + Math.random() * 12;
+    shootingStars.push({
+      x: sx, y: sy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      length: 120 + Math.random() * 180,
+      alpha:  0.7 + Math.random() * 0.3,
+      life:   1.0,
+      decay:  0.016 + Math.random() * 0.020,
+    });
+  }
+
+  // ── Draw ──────────────────────────────────────────────────
+  function draw(ts) {
+    ctx.clearRect(0, 0, W, H);
+    const t = ts * 0.001;
+
+    // 1. Sao nhấp nháy
+    stars.forEach(s => {
+      const a = s.alpha * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+      ctx.globalAlpha = a;
+      ctx.fillStyle   = '#fff';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    // 2. Sao băng
+    if (ts - lastShot > 2800 + Math.random() * 2000) {
+      spawnShootingStar();
+      lastShot = ts;
+    }
+    shootingStars = shootingStars.filter(ss => ss.life > 0);
+    shootingStars.forEach(ss => {
+      const angle = Math.atan2(ss.vy, ss.vx);
+      const tailX = ss.x - Math.cos(angle) * ss.length * ss.life;
+      const tailY = ss.y - Math.sin(angle) * ss.length * ss.life;
+
+      const grad = ctx.createLinearGradient(tailX, tailY, ss.x, ss.y);
+      grad.addColorStop(0,    `rgba(255,255,255,0)`);
+      grad.addColorStop(0.65, `rgba(255,200,210,${(ss.alpha * ss.life * 0.35).toFixed(3)})`);
+      grad.addColorStop(1,    `rgba(255,255,255,${(ss.alpha * ss.life).toFixed(3)})`);
+
+      ctx.save();
+      ctx.strokeStyle = grad;
+      ctx.lineWidth   = 1.0 + ss.life * 0.8;
+      ctx.lineCap     = 'round';
+      ctx.beginPath();
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(ss.x, ss.y);
+      ctx.stroke();
+      ctx.restore();
+
+      // đầu sao — chấm sáng nhỏ
+      ctx.globalAlpha = ss.alpha * ss.life;
+      ctx.fillStyle   = '#fff';
+      ctx.beginPath();
+      ctx.arc(ss.x, ss.y, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      ss.x    += ss.vx;
+      ss.y    += ss.vy;
+      ss.life -= ss.decay;
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  requestAnimationFrame(draw);
+})();
 
 // ============ INIT ============
 initProjectsData();
